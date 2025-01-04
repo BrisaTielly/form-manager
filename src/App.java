@@ -23,15 +23,15 @@ public class App {
 
         String path = ".\\formulario.txt";
         
-        try(BufferedReader br = new BufferedReader(new FileReader(path))){
+        try (BufferedReader br = new BufferedReader(new FileReader(path))) {
             String line = br.readLine();
             int i = 1;
-            while(line != null){
-            staticQuestions.add(new Questions(line, i++));
-            line = br.readLine();
+            while (line != null) {
+                String questionText = line.split("-")[1].trim();  // Remove a numeração e espaços
+                staticQuestions.add(new Questions(questionText, i++));
+                line = br.readLine();
             }
-            
-        }catch(IOException e){
+        } catch (IOException e) {
             System.out.println("Error " + e.getMessage());
         }
 
@@ -49,7 +49,7 @@ public class App {
                 case 1 -> registerUsers(user, staticQuestions, sc, finalPaths);
                 case 2 -> listUsers(user);
                 case 3 -> registerNewQuestion(sc, staticQuestions, path);
-                case 4 -> deleteQuestions(sc, staticQuestions);
+                case 4 -> deleteQuestions(sc, staticQuestions, path);
                 default -> throw new AssertionError();
             }
         }
@@ -122,13 +122,22 @@ public class App {
         }
     } 
     
-    public static void deleteQuestions(Scanner sc, List<Questions> staticQuestions){
+    public static void deleteQuestions(Scanner sc, List<Questions> staticQuestions, String path){
         System.out.println("Qual o número da pergunta que você gostaria de deletar? ");
         int option = sc.nextInt();
         if(option <= 4) {
             System.out.println("As questões padrão não podem ser deletadas");
         }else {
-            staticQuestions.remove(option);
+            staticQuestions.remove(option-1);
+            try (BufferedWriter bw = new BufferedWriter(new FileWriter(path))) {
+                for (int i = 0; i < staticQuestions.size(); i++) {
+                    Questions question = staticQuestions.get(i);
+                    bw.write(question.getId() + "- " + question.getQuestion() + "\n");
+                }
+            } catch (IOException e) {
+                System.out.println("Error ao atualizar o arquivo: " + e.getMessage());
+            }
+    
         }
         sc.nextLine();
     }
