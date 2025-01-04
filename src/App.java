@@ -50,6 +50,33 @@ public class App {
             System.out.println("Error " + e.getMessage());
         }
 
+        int select = 0;
+        while (select != 6) { 
+            System.out.println("1 - Cadastrar o usuário");
+            System.out.println("2 - Listar todos os usuáros cadastrados");
+            System.out.println("3 - Cadastrar nova pergunta no formulário");
+            System.out.println("4 - Deletar pergunta no formulário");
+            System.out.println("5 - Pesquisar usuário por nome, idade ou email");
+            System.out.println("6 - Encerrar");
+            select = sc.nextInt();
+            
+            switch (select) {
+                case 1:
+                    //Chamar a funcao pra cadastrar
+                    break;
+                case 2:
+                    listUsers(user);
+                    break;    
+                default:
+                    throw new AssertionError();
+            }
+        }
         sc.close();
+    }
+
+    public static void listUsers(List<User> user) {
+        for(User x: user){
+            System.out.println(x.getName());
+        }
     }
 }
