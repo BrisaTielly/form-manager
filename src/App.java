@@ -1,3 +1,4 @@
+import entities.Questions;
 import entities.User;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -16,7 +17,7 @@ public class App {
     public static void main(String[] args) throws Exception {
         Locale.setDefault(Locale.US);
         Scanner sc = new Scanner(System.in);
-        List<String> staticQuestions = new ArrayList<>();
+        List<Questions> staticQuestions = new ArrayList<>();
         List<User> user =  new ArrayList<>();;
         Map<Integer, String> finalPaths = new TreeMap<>();
 
@@ -24,8 +25,9 @@ public class App {
         
         try(BufferedReader br = new BufferedReader(new FileReader(path))){
             String line = br.readLine();
+            int i = 1;
             while(line != null){
-            staticQuestions.add(line);
+            staticQuestions.add(new Questions(line, i++));
             line = br.readLine();
             }
             
@@ -44,42 +46,44 @@ public class App {
             select = sc.nextInt();
             
             switch (select) {
-                case 1:
-                    //Chamar a funcao pra cadastrar
-                    registerUsers(user, staticQuestions, sc, finalPaths);
-                    break;
-                case 2:
-                    listUsers(user);
-                    break;    
-                default:
-                    throw new AssertionError();
+                case 1 -> registerUsers(user, staticQuestions, sc, finalPaths);
+                case 2 -> listUsers(user);
+                case 3 -> registerNewQuestion(sc, staticQuestions);
+                case 4 -> deleteQuestions(sc, staticQuestions);
+                default -> throw new AssertionError();
             }
         }
 
         sc.close();
     }
 
+
     public static void listUsers(List<User> user) {
+        int i = 1;
         for(User x: user){
-            System.out.println(x.getName());
+            System.out.println(i + "- " + x.getName());
+            i++;
         }
     }
 
-    public static void registerUsers(List<User> user, List<String> staticQuestions, Scanner sc,  Map<Integer, String> finalPaths){
-        String[] answersFields = new String[4];
-        int i = 0;
+    public static void registerUsers(List<User> user, List<Questions> staticQuestions, Scanner sc,  Map<Integer, String> finalPaths){
+        ArrayList<String> answersFields = new ArrayList<>();
         sc.nextLine();
-        for(String question : staticQuestions){
-            System.out.println(question);
-            answersFields[i++] = sc.nextLine();
+        for(Questions question : staticQuestions){
+            if(question.getId() > 4) 
+                System.out.println(question.getId() + "- " + question.getQuestion());
+            else 
+                System.out.println(question.getQuestion());
+           // sc.nextLine();
+            answersFields.add(sc.nextLine());
         }
-        user.add( new User(answersFields[0], answersFields[1], answersFields[2], answersFields[3]));
+        user.add( new User(answersFields.get(0), answersFields.get(1), answersFields.get(2), answersFields.get(3)));
         System.out.println(user);
         createUserFile(user, finalPaths);
         }  
 
 
-        public static void createUserFile(List<User> user,  Map<Integer, String> finalPaths) {
+    public static void createUserFile(List<User> user,  Map<Integer, String> finalPaths) {
             int i = 1;
             while(finalPaths.containsKey(i)){
                 i++;
@@ -95,5 +99,24 @@ public class App {
                 System.out.println("Error " + e.getMessage());
             }
         }
+
+    public static void registerNewQuestion(Scanner sc, List<Questions> staticQuestions) {
+        int i =  staticQuestions.getLast().getId() + 1;
+        System.out.println("Insirar a nova pergunta");
+        sc.nextLine();
+        String newQuestions = sc.nextLine();
+        staticQuestions.add( new Questions(newQuestions, i));
+    } 
+    
+    public static void deleteQuestions(Scanner sc, List<Questions> staticQuestions){
+        System.out.println("Qual o número da pergunta que você gostaria de deletar? ");
+        int option = sc.nextInt();
+        if(option <= 4) {
+            System.out.println("As questões padrão não podem ser deletadas");
+        }else {
+            staticQuestions.remove(option);
+        }
+        sc.nextLine();
+    }
         
 }
