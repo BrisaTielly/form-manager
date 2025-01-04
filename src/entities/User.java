@@ -1,10 +1,15 @@
 package entities;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class User {
   private String name;
   private String email;
   private String age;
   private String height;
+
+  private Map<String, String> additionalQuestions;
 
   public User(){
   }
@@ -14,6 +19,7 @@ public class User {
     this.email = email;
     this.age = age;
     this.height = height;
+    this.additionalQuestions = new HashMap<>();
   }
 
   public String getName() {
@@ -46,6 +52,14 @@ public class User {
 
   public void setHeight(String height) {
     this.height = height;
+  }
+
+  public void addQuestion(String question, String answer) {
+    additionalQuestions.put(question, answer); // Adiciona a pergunta e a resposta ao Map
+}
+
+  public String getAnswer(String question) {
+    return additionalQuestions.get(question);
   }
 
   @Override

@@ -48,7 +48,7 @@ public class App {
             switch (select) {
                 case 1 -> registerUsers(user, staticQuestions, sc, finalPaths);
                 case 2 -> listUsers(user);
-                case 3 -> registerNewQuestion(sc, staticQuestions);
+                case 3 -> registerNewQuestion(sc, staticQuestions, path);
                 case 4 -> deleteQuestions(sc, staticQuestions);
                 default -> throw new AssertionError();
             }
@@ -75,15 +75,15 @@ public class App {
             else 
                 System.out.println(question.getQuestion());
            // sc.nextLine();
-            answersFields.add(sc.nextLine());
+            answersFields.add(sc.nextLine()); //Vai ter um indice aqui que corresponde ao getId da pergunta
         }
         user.add( new User(answersFields.get(0), answersFields.get(1), answersFields.get(2), answersFields.get(3)));
         System.out.println(user);
-        createUserFile(user, finalPaths);
+        createUserFile(user, finalPaths, staticQuestions,  answersFields);
         }  
 
 
-    public static void createUserFile(List<User> user,  Map<Integer, String> finalPaths) {
+    public static void createUserFile(List<User> user,  Map<Integer, String> finalPaths, List<Questions> staticQuestions, ArrayList<String> answerFields) {
             int i = 1;
             while(finalPaths.containsKey(i)){
                 i++;
@@ -95,17 +95,31 @@ public class App {
                 bw.write(user.get(i-1).getEmail() + "\n");
                 bw.write(user.get(i-1).getAge() + "\n");
                 bw.write(user.get(i-1).getHeight() + "\n");
+
+                //Vai percorrer até a quantidade de questões que tiver
+                for(int j = 4; j<answerFields.size(); j++){
+                    bw.write(answerFields.get(j));
+                }
+            
+            
             }catch(IOException e){
                 System.out.println("Error " + e.getMessage());
             }
         }
 
-    public static void registerNewQuestion(Scanner sc, List<Questions> staticQuestions) {
+    public static void registerNewQuestion(Scanner sc, List<Questions> staticQuestions, String path) {
         int i =  staticQuestions.getLast().getId() + 1;
         System.out.println("Insirar a nova pergunta");
         sc.nextLine();
         String newQuestions = sc.nextLine();
         staticQuestions.add( new Questions(newQuestions, i));
+
+        try(BufferedWriter bw = new BufferedWriter(new FileWriter(path, true))){
+            bw.newLine();
+            bw.write(staticQuestions.getLast().getId() + "- " + staticQuestions.getLast().getQuestion());
+        }catch(IOException e){
+            e.getMessage();
+        }
     } 
     
     public static void deleteQuestions(Scanner sc, List<Questions> staticQuestions){
@@ -118,5 +132,5 @@ public class App {
         }
         sc.nextLine();
     }
-        
+    
 }
