@@ -7,7 +7,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Scanner;
+import java.util.TreeMap;
 
 
 public class App {
@@ -16,6 +18,7 @@ public class App {
         Scanner sc = new Scanner(System.in);
         List<String> staticQuestions = new ArrayList<>();
         List<User> user =  new ArrayList<>();;
+        Map<Integer, String> finalPaths = new TreeMap<>();
 
         String path = ".\\formulario.txt";
         
@@ -26,26 +29,6 @@ public class App {
             line = br.readLine();
             }
             
-        }catch(IOException e){
-            System.out.println("Error " + e.getMessage());
-        }
-
-        String[] answersFields = new String[4];
-        int i = 0;
-        for(String question : staticQuestions){
-            System.out.println(question);
-            answersFields[i++] = sc.nextLine();
-        }
-
-        user.add( new User(answersFields[0], answersFields[1], Integer.parseInt(answersFields[2]), Double.parseDouble(answersFields[3])));
-        System.out.println(user);
-        String finalPath = ".\\" + "1- " + user.get(0).getName().toUpperCase().replace(" ", "") + ".txt";
-
-        try(BufferedWriter bw = new BufferedWriter(new FileWriter(finalPath))){
-            bw.write(user.get(0).getName() + "\n");
-            bw.write(user.get(0).getEmail() + "\n");
-            bw.write(user.get(0).getAge() + "\n");
-            bw.write(user.get(0).getHeight() + "\n");
         }catch(IOException e){
             System.out.println("Error " + e.getMessage());
         }
@@ -63,6 +46,7 @@ public class App {
             switch (select) {
                 case 1:
                     //Chamar a funcao pra cadastrar
+                    registerUsers(user, staticQuestions, sc, finalPaths);
                     break;
                 case 2:
                     listUsers(user);
@@ -71,6 +55,7 @@ public class App {
                     throw new AssertionError();
             }
         }
+
         sc.close();
     }
 
@@ -79,4 +64,36 @@ public class App {
             System.out.println(x.getName());
         }
     }
+
+    public static void registerUsers(List<User> user, List<String> staticQuestions, Scanner sc,  Map<Integer, String> finalPaths){
+        String[] answersFields = new String[4];
+        int i = 0;
+        sc.nextLine();
+        for(String question : staticQuestions){
+            System.out.println(question);
+            answersFields[i++] = sc.nextLine();
+        }
+        user.add( new User(answersFields[0], answersFields[1], answersFields[2], answersFields[3]));
+        System.out.println(user);
+        createUserFile(user, finalPaths);
+        }  
+
+
+        public static void createUserFile(List<User> user,  Map<Integer, String> finalPaths) {
+            int i = 1;
+            while(finalPaths.containsKey(i)){
+                i++;
+            }
+            String finalPath = ".\\" + i + "- " + user.get(i-1).getName().toUpperCase().replace(" ", "") + ".txt";
+            finalPaths.put(i, finalPath);
+            try(BufferedWriter bw = new BufferedWriter(new FileWriter(finalPath))){
+                bw.write(user.get(i-1).getName() + "\n");
+                bw.write(user.get(i-1).getEmail() + "\n");
+                bw.write(user.get(i-1).getAge() + "\n");
+                bw.write(user.get(i-1).getHeight() + "\n");
+            }catch(IOException e){
+                System.out.println("Error " + e.getMessage());
+            }
+        }
+        
 }
