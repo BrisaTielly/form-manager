@@ -1,5 +1,8 @@
 package entities;
 
+import exceptions.missingSymbol;
+import exceptions.notEnoughAge;
+import exceptions.notEnoughCharacters;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -61,6 +64,23 @@ public class User {
   public String getAnswer(String question) {
     return additionalQuestions.get(question);
   }
+
+  public void validateUserInput(String username, int age, String email) throws notEnoughCharacters, notEnoughAge, missingSymbol {
+    // Verifica se o nome de usuário tem pelo menos 5 caracteres
+    if (username.length() < 5) {
+        throw new notEnoughCharacters("O nome de usuário precisa ter pelo menos 5 caracteres.");
+    }
+
+    // Verifica se a idade é suficiente (por exemplo, mínimo de 18 anos)
+    if (age < 18) {
+        throw new notEnoughAge("Você precisa ter pelo menos 18 anos.");
+    }
+
+    // Verifica se a senha contém um símbolo
+    if (!email.contains("@")) {
+        throw new missingSymbol("A senha precisa conter pelo menos um símbolo '@'.");
+    }
+}
 
   @Override
   public String toString() {
