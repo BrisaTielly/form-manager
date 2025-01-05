@@ -50,6 +50,7 @@ public class App {
                 case 2 -> listUsers(user);
                 case 3 -> registerNewQuestion(sc, staticQuestions, path);
                 case 4 -> deleteQuestions(sc, staticQuestions, path);
+                case 5 -> searchUser(user, sc);
                 default -> throw new AssertionError();
             }
         }
@@ -137,9 +138,34 @@ public class App {
             } catch (IOException e) {
                 System.out.println("Error ao atualizar o arquivo: " + e.getMessage());
             }
-    
+
         }
-        sc.nextLine();
+        }
+
+        public static void searchUser(List<User> users, Scanner sc) {
+            sc.nextLine();  // Limpar o buffer do scanner
+            System.out.println("Digite o termo de busca (nome, idade ou email):");
+            String searchTerm = sc.nextLine().toLowerCase();
+        
+            List<User> matchedUsers = users.stream()
+                    .filter(user -> user.getName().toLowerCase().contains(searchTerm) ||
+                                    user.getEmail().toLowerCase().contains(searchTerm))
+                    .toList();
+        
+            if (matchedUsers.isEmpty()) {
+                System.out.println("Nenhum usuário encontrado com o termo de busca: " + searchTerm);
+            } else {
+                matchedUsers.forEach(user -> {
+                    System.out.println("Usuário encontrado:");
+                    System.out.println("Nome: " + user.getName());
+                    System.out.println("Email: " + user.getEmail());
+                    System.out.println("Idade: " + user.getAge());
+                    System.out.println("Altura: " + user.getHeight());
+                });
+            }
+        }
     }
+
+        
     
-}
+
