@@ -5,7 +5,6 @@ Aplicação desenvolvida em Java para gerenciar formulários de cadastro de usu�
 - **Cadastro de usuários**: Permite o cadastro de um usuário, armazenando as respostas em arquivos individuais.
 - **Formulário dinâmico**: Adição e remoção de perguntas do formulário, com validações rigorosas.
 - **Pesquisa e listagem**: Capacidade de pesquisar usuários cadastrados por nome, idade ou email, e listar todos os cadastrados.
-- **Validações e exceções**: Exceções são lançadas para garantir a integridade dos dados (nome, e-mail, idade e altura).
 - **Armazenamento de dados**: As respostas são salvas em arquivos `.txt` com o nome do usuário.
 
 ### Tecnologias:
